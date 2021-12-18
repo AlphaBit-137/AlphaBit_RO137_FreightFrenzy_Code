@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.drive.autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 //Program temporar
+@Autonomous
 public class TestDetection extends LinearOpMode {
 
     BlockDetection bloc = new BlockDetection();

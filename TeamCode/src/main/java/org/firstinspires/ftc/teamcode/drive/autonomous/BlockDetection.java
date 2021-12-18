@@ -18,7 +18,6 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous
 public class BlockDetection extends LinearOpMode {
     public static Telemetry telemetry;
     private ElapsedTime runtime = new ElapsedTime();
