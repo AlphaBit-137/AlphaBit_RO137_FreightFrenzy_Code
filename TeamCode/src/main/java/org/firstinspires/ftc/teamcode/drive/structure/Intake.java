@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Intake extends LinearOpMode {
-    public DcMotor intake = null;
+    public DcMotor intakewing = null;
 
     public IntakeModes RobotIntake = IntakeModes.STOP;
 
@@ -22,30 +22,34 @@ public class Intake extends LinearOpMode {
         STOP
     }
 
+    public Intake(){
+
+    }
+
     HardwareMap hwMap = null;
 
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
         // Define and Initialize Motors
-        intake = hwMap.get(DcMotor.class, "Intake");
-        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intake.setPower(0);
+        intakewing = hwMap.get(DcMotor.class, "Intake");
+        intakewing.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakewing.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakewing.setPower(0);
     }
 
     public void update(){
         switch (RobotIntake){
             case IN:{
-                intake.setPower(0.5);
+                intakewing.setPower(-0.8);
                 break;
             }
             case OUT:{
-                intake.setPower(-0.5);
+                intakewing.setPower(0.8);
                 break;
             }
             case STOP:{
-                intake.setPower(0);
+                intakewing.setPower(0);
                 break;
             }
         }
