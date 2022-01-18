@@ -22,7 +22,7 @@ public class Arm extends LinearOpMode {
         // Define and Initialize Motors
         arm = hwMap.get(DcMotor.class, "Arm");
         arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         arm.setPower(0);
     }
 

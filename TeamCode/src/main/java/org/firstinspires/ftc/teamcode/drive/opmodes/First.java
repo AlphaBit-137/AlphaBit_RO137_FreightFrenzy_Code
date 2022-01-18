@@ -90,9 +90,9 @@ public class First extends LinearOpMode {
             Side = gamepad1.left_stick_x;
 
 
-            double armup = Range.clip(gamepad2.right_trigger, 0,0.5);
+            double armup = Range.clip(gamepad2.right_trigger, 0,0.3);
 
-            double armdown = Range.clip(gamepad2.left_trigger,0,0.5);
+            double armdown = Range.clip(gamepad2.left_trigger,0,0.3);
 
             //Calcularea puterii redate motoarelor
             Sum = Range.clip(Front + Side, -1.0, 1.0);
@@ -128,7 +128,7 @@ public class First extends LinearOpMode {
                 FrontRightMotor.setPower(0);
             }
 */
-            //Repara codil sa mearga cu structure
+            //Repara codul sa mearga cu structure
             /*
             if(gamepad2.right_bumper){
                 slider.switchToUP();
