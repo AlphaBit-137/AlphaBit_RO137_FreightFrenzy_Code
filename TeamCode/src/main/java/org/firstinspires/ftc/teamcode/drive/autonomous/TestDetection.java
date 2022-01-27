@@ -29,8 +29,8 @@ public class TestDetection extends LinearOpMode {
                 telemetry.addData("Cazul", 0);
                 caz = 0;
             }
-            telemetry.addData("Big percentage", bloc.Left_percent);
-            telemetry.addData("Small percentage", bloc.Right_percent);
+            telemetry.addData("LeftPercent", bloc.Left_percent);
+            telemetry.addData("RightPercent", bloc.Right_percent);
             telemetry.update();
         }
 

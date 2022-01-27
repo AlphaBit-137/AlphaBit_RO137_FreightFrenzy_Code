@@ -56,30 +56,29 @@ public class BlockDetection extends LinearOpMode {
         public Point RightSquare2 = new Point(115, 110);
 
         static final Rect LEFT_ROI = new Rect(
-                new Point (150, 155),
-                new Point (190, 110)
-        );
-
-        static final Rect RIGHT_ROI = new Rect(
                 new Point (75, 155),
                 new Point (115, 110)
         );
 
+        static final Rect RIGHT_ROI = new Rect(
+                new Point (150, 155),
+                new Point (190, 110)
+        );
+
         Scalar BLACK = new Scalar(0, 0, 0);
+
+        public void BlockDetection(Telemetry t) { telemetry=t;}
 
         @Override
         public Mat processFrame(Mat input) {
 
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_BGR2YCrCb);
             Core.extractChannel(YCrCb, Cb, 2);
-            Imgproc.threshold(Cb, tholdMat, 87, 255, Imgproc.THRESH_BINARY_INV);
+            Imgproc.threshold(Cb, tholdMat, 120, 255, Imgproc.THRESH_BINARY_INV);
 
 
             //   double[] bigSquarePointValues = tholdMat.get(BigSquarePointY, BigSquarePointX);
             //   double[] smallSquarePointValues = tholdMat.get(SmallSquarePointY, SmallSquarePointX);
-
-            //   ring_4 = (int) bigSquarePointValues[0];
-            //   ring_1 = (int) smallSquarePointValues[0];
 
             Mat Left = tholdMat.submat(LEFT_ROI);
             Mat Right = tholdMat.submat(RIGHT_ROI);
@@ -90,14 +89,16 @@ public class BlockDetection extends LinearOpMode {
             Left.release();
             Right.release();
 
-            Left_percent = Math.round(big_value*100);
-            Right_percent = Math.round(small_value*100);
+            Left_percent = Math.round(big_value*100.0);
+            Right_percent = Math.round(small_value*100.0);
 
-            // Imgproc.rectangle(input, BigSquare1, BigSquare2, BLACK);
-            // Imgproc.rectangle(input, SmallSquare1, SmallSquare2, BLACK);
+             Imgproc.rectangle(input, LeftSquare1, LeftSquare2, BLACK);
+             Imgproc.rectangle(input, RightSquare1, RightSquare2, BLACK);
 
-            telemetry.addData("Valoarea stanga:", Left_percent);
-            telemetry.addData("Valoarea dreapta:", Right_percent);
+            telemetry.addData("Valoarea stanga:",(int)Core.sumElems(Left).val[0]);
+            telemetry.addData("Valoarea dreapta:", (int)Core.sumElems(Right).val[0]);
+            telemetry.addData("Procentaj stanga:", Math.round(big_value*100));
+            telemetry.addData("Procentaj dreapta:", Math.round(small_value*100));
             telemetry.update();
 
             return input;

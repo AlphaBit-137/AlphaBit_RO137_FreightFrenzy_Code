@@ -17,13 +17,12 @@ public class First extends LinearOpMode {
     public DcMotor FrontRightMotor = null;
     public DcMotor FrontLeftMotor = null;
     public DcMotor BackRightMotor = null;
+    public int x;
 
-    public DcMotor arm = null;
-    public DcMotor intake = null;
-    public DcMotor slider = null;
-    /*Intake intake = new Intake();
+
+    Intake intake = new Intake();
     Arm arm = new Arm();
-    Sliders slider = new Sliders();*/
+    Sliders slider = new Sliders();
 
     int ArmModes;
 
@@ -35,7 +34,7 @@ public class First extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        BackLeftMotor = hardwareMap.get(DcMotor.class, "Back_Left");
+       BackLeftMotor = hardwareMap.get(DcMotor.class, "Back_Left");
         FrontRightMotor = hardwareMap.get(DcMotor.class, "Front_Right");
         FrontLeftMotor = hardwareMap.get(DcMotor.class, "Front_Left");
         BackRightMotor = hardwareMap.get(DcMotor.class, "Back_Right");
@@ -55,43 +54,37 @@ public class First extends LinearOpMode {
         FrontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BackRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        /*intake.init(hardwareMap);
+        intake.init(hardwareMap);
         arm.init(hardwareMap);
-        slider.init(hardwareMap);*/
+        slider.init(hardwareMap);
 
-        arm = hardwareMap.get(DcMotor.class, "Arm");
-        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        arm.setPower(0);
-
-        intake = hardwareMap.get(DcMotor.class, "Intake");
-        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intake.setPower(0);
-
-        slider = hardwareMap.get(DcMotor.class, "Slider");
-        slider.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        slider.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slider.setPower(0);
 
         runtime.reset();
         waitForStart();
-
-        // Atata timp cat OpMode-ul este activ va rula pana la oprire urmatorul cod
 
         while (opModeIsActive()) {
 
             //Initiallizam variabilele
             double Front, Turn, Sum, Diff, Side, Drive1, Drive2, Drive3, Drive4;
 
-            //Primirea datelor de la joystick-uri
-            Front = gamepad1.left_stick_y;
-            Turn = gamepad1.right_stick_x;
-            Side = gamepad1.left_stick_x;
-
+            //Speed Modes
+            if (gamepad1.a)
+                x=1;
+            if (gamepad1.b)
+                x=0;
+            if (x==1)
+            {
+                Front = gamepad1.left_stick_y;
+                Turn = -gamepad1.right_stick_x;
+                Side = gamepad1.left_stick_x;
+            }
+            else {
+                Front = Range.clip(gamepad1.left_stick_y, -0.4, 0.4);
+                Turn = Range.clip(-gamepad1.right_stick_x, -0.4, 0.4);
+                Side = Range.clip(gamepad1.left_stick_x, -0.4, 0.4);
+            }
 
             double armup = Range.clip(gamepad2.right_trigger, 0,0.3);
-
             double armdown = Range.clip(gamepad2.left_trigger,0,0.3);
 
             //Calcularea puterii redate motoarelor
@@ -103,7 +96,7 @@ public class First extends LinearOpMode {
             Drive3 = Range.clip(Diff - 2*Turn, -1.0, 1.0);
             Drive4 = Range.clip(Diff + 2*Turn, -1.0, 1.0);
 
-
+// Verificarea individuala a motoarelor
             /*if(gamepad1.a){
                 BackLeftMotor.setPower(0.5);
             }else{
@@ -128,8 +121,7 @@ public class First extends LinearOpMode {
                 FrontRightMotor.setPower(0);
             }
 */
-            //Repara codul sa mearga cu structure
-            /*
+
             if(gamepad2.right_bumper){
                 slider.switchToUP();
             }else if(gamepad2.left_bumper){
@@ -168,84 +160,14 @@ public class First extends LinearOpMode {
                 intake.switchToOUT();
                 }else{
                     intake.switchToSTOP();
-                }*/
+                }
             MS(Drive1, Drive2, Drive3, Drive4);
 
-            /*if(intake.RobotIntake == Intake.IntakeModes.IN){
-                telemetry.addData("Intake", "IN");
-            }
-            if(intake.RobotIntake == Intake.IntakeModes.OUT){
-                telemetry.addData("Intake", "OUT");
-            }
-            if(intake.RobotIntake == Intake.IntakeModes.STOP){
-                telemetry.addData("Intake", "STOP");
-            }
-
-            if(slider.RobotSlider == Sliders.SlidersModes.DOWN){
-                telemetry.addData("Slider", "DOWn");
-            }
-            if(slider.RobotSlider == Sliders.SlidersModes.UP){
-                telemetry.addData("Slider", "UP");
-            }
-            if(slider.RobotSlider == Sliders.SlidersModes.STOP){
-                telemetry.addData("Slider", "STOP");
-            }
-
-            if(ArmModes==1){
-                telemetry.addData("Arm", "IN");
-            }
-            if(ArmModes==-1){
-                telemetry.addData("Arm", "OUT");
-            }
-            if(ArmModes==0){
-                telemetry.addData("Arm", "STOP");
-            }*/
-
-            if(gamepad2.right_bumper){
-                slider.setPower(-0.5);
-            }else if(gamepad2.left_bumper){
-                slider.setPower(0.5);
-            }else{
-                slider.setPower(0);
-            }
-
-            if(gamepad2.a){
-                intake.setPower(-0.8);
-            }else if(gamepad2.b){
-                intake.setPower(0.8);
-            }else{
-                intake.setPower(0);
-            }
-
-            if(armup!=0 && armdown!=0){
-                arm.setPower(0);
-                ArmModes=0;
-            }else {
-                if(armdown!=0 || armup!=0) {
-                    if (armdown<armup)
-                    {
-                        arm.setPower(-armup);
-                        ArmModes=1;
-                    }
-                    else
-                    {
-                        arm.setPower(armdown);
-                        ArmModes=-1;
-                    }
-                }
-                else
-                {
-                    arm.setPower(0);
-                    ArmModes=0;
-                }
-
-            }
-
             telemetry.addData("Motors", "BackLeft (%.2f), FrontRight (%.2f), FrontLeft (%.2f), BackRight (%.2f)", Drive1, Drive2, Drive3, Drive4);
-            telemetry.addData("Informatie:", "Atentie! Programul a fost sting.");
+            telemetry.addData("Informatie:", "Atentie! Programul a fost stins.");
 
-            /*intake.update();
-            slider.update();*/
+            intake.update();
+            slider.update();
             telemetry.update();
         }
     }
