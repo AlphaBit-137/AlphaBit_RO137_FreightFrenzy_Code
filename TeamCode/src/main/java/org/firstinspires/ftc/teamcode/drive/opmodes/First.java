@@ -8,7 +8,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.drive.structure.Arm;
+import org.firstinspires.ftc.teamcode.drive.structure.Carusel;
 import org.firstinspires.ftc.teamcode.drive.structure.Intake;
+//import org.firstinspires.ftc.teamcode.drive.structure.Lift;
 import org.firstinspires.ftc.teamcode.drive.structure.Sliders;
 
 @TeleOp
@@ -17,12 +19,15 @@ public class First extends LinearOpMode {
     public DcMotor FrontRightMotor = null;
     public DcMotor FrontLeftMotor = null;
     public DcMotor BackRightMotor = null;
-    public int x;
+    public double Limit=0.3;
+    public boolean Chose;
+    public boolean Chose2;
 
 
     Intake intake = new Intake();
     Arm arm = new Arm();
     Sliders slider = new Sliders();
+    Carusel duck = new Carusel();
 
     int ArmModes;
 
@@ -34,14 +39,14 @@ public class First extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-       BackLeftMotor = hardwareMap.get(DcMotor.class, "Back_Left");
+        BackLeftMotor = hardwareMap.get(DcMotor.class, "Back_Left");
         FrontRightMotor = hardwareMap.get(DcMotor.class, "Front_Right");
         FrontLeftMotor = hardwareMap.get(DcMotor.class, "Front_Left");
         BackRightMotor = hardwareMap.get(DcMotor.class, "Back_Right");
 
         BackLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        FrontRightMotor.setDirection(DcMotor.Direction.REVERSE);
-        FrontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        FrontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        FrontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         BackRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         BackLeftMotor.setPower(0);
@@ -57,6 +62,7 @@ public class First extends LinearOpMode {
         intake.init(hardwareMap);
         arm.init(hardwareMap);
         slider.init(hardwareMap);
+        duck.init(hardwareMap);
 
 
         runtime.reset();
@@ -68,21 +74,22 @@ public class First extends LinearOpMode {
             double Front, Turn, Sum, Diff, Side, Drive1, Drive2, Drive3, Drive4;
 
             //Speed Modes
-            if (gamepad1.a)
-                x=1;
-            if (gamepad1.b)
-                x=0;
-            if (x==1)
-            {
-                Front = gamepad1.left_stick_y;
-                Turn = -gamepad1.right_stick_x;
-                Side = gamepad1.left_stick_x;
-            }
-            else {
-                Front = Range.clip(gamepad1.left_stick_y, -0.4, 0.4);
-                Turn = Range.clip(-gamepad1.right_stick_x, -0.4, 0.4);
-                Side = Range.clip(gamepad1.left_stick_x, -0.4, 0.4);
-            }
+            if(gamepad1.dpad_up) {
+                if(Chose)Limit=Limit+0.1;
+                if(Limit>1)Limit=1;
+                Chose = false;
+
+            } else Chose=true;
+
+            if(gamepad1.dpad_down) {
+                if(Chose2)Limit=Limit-0.1;
+                if(Limit<0.3)Limit=0.3;
+                Chose2 = false;
+
+            } else {Chose2=true; }
+            Front = Range.clip(gamepad1.left_stick_y, -Limit, Limit);
+            Turn = Range.clip(-gamepad1.right_stick_x, -Limit, Limit);
+            Side = Range.clip(gamepad1.left_stick_x, -Limit, Limit);
 
             double armup = Range.clip(gamepad2.right_trigger, 0,0.3);
             double armdown = Range.clip(gamepad2.left_trigger,0,0.3);
@@ -95,6 +102,18 @@ public class First extends LinearOpMode {
             Drive2 = Range.clip(Sum + 2*Turn, -1.0, 1.0);
             Drive3 = Range.clip(Diff - 2*Turn, -1.0, 1.0);
             Drive4 = Range.clip(Diff + 2*Turn, -1.0, 1.0);
+
+            if(gamepad2.x){
+                duck.switchToIN();
+            }else if(gamepad2.y){
+                duck.switchToOUT();
+            }else {duck.switchToSTOP();}
+
+            if(gamepad2.dpad_right){
+                slider.RobotUp();
+            }else if(gamepad1.dpad_left){
+                slider.RobotDown();
+            }else { slider.RobotStop();}
 
 // Verificarea individuala a motoarelor
             /*if(gamepad1.a){
@@ -158,84 +177,24 @@ public class First extends LinearOpMode {
                 intake.switchToIN();
             }else if(gamepad2.b){
                 intake.switchToOUT();
-                }else{
-                    intake.switchToSTOP();
-<<<<<<< Updated upstream
-=======
-                }*/
-            MS(Drive1, Drive2, Drive3, Drive4);
-
-            /*if(intake.RobotIntake == Intake.IntakeModes.IN){
-                telemetry.addData("Intake", "IN");
-            }
-            if(intake.RobotIntake == Intake.IntakeModes.OUT){
-                telemetry.addData("Intake", "OUT");
-            }
-            if(intake.RobotIntake == Intake.IntakeModes.STOP){
-                telemetry.addData("Intake", "STOP");
-            }
-
-            if(slider.RobotSlider == Sliders.SlidersModes.DOWN){
-                telemetry.addData("Slider", "DOWN");
-            }
-            if(slider.RobotSlider == Sliders.SlidersModes.UP){
-                telemetry.addData("Slider", "UP");
-            }
-            if(slider.RobotSlider == Sliders.SlidersModes.STOP){
-                telemetry.addData("Slider", "STOP");
-            }
-
-            if(ArmModes==1){
-                telemetry.addData("Arm", "IN");
-            }
-            if(ArmModes==-1){
-                telemetry.addData("Arm", "OUT");
-            }
-            if(ArmModes==0){
-                telemetry.addData("Arm", "STOP");
-            }*/
-
-            if(gamepad2.right_bumper){
-                slider.setPower(-0.5);
-            }else if(gamepad2.left_bumper){
-                slider.setPower(0.5);
             }else{
-                slider.setPower(0);
+                intake.switchToSTOP();
             }
-
-            if(gamepad2.a){
-                intake.setPower(-0.8);
-            }else if(gamepad2.b){
-                intake.setPower(0.8);
-            }else{
-                intake.setPower(0);
-            }
-
-            if(armup!=0 && armdown!=0){
-                arm.setPower(0);
-                ArmModes=0;
-            }else {
-                if(armdown!=0 || armup!=0) {
-                    if (armdown<armup)
-                    {
-                        arm.setPower(-armup);
-                        ArmModes=1;
-                    }
-                    else
-                    {
-                        arm.setPower(armdown);
-                        ArmModes=-1;
-                    }
->>>>>>> Stashed changes
-                }
             MS(Drive1, Drive2, Drive3, Drive4);
 
             telemetry.addData("Motors", "BackLeft (%.2f), FrontRight (%.2f), FrontLeft (%.2f), BackRight (%.2f)", Drive1, Drive2, Drive3, Drive4);
-            telemetry.addData("Informatie:", "Atentie! Programul a fost stins.");
+            //telemetry.addData("Informatie:", "Atentie! Programul a fost stins.");
+            telemetry.addData("Power Limit:", Limit + "%");
+            telemetry.addData("Poz slider:",slider.Slider.getCurrentPosition());
+            telemetry.addData("Poz Carusel",duck.Duck.getCurrentPosition());
+            telemetry.addData("Poz intake", intake.intakewing.getCurrentPosition());
 
+//325, 82,
             intake.update();
             slider.update();
             telemetry.update();
+            duck.update();
+            //lift.update();
         }
     }
 
