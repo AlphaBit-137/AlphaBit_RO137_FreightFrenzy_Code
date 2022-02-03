@@ -160,6 +160,73 @@ public class First extends LinearOpMode {
                 intake.switchToOUT();
                 }else{
                     intake.switchToSTOP();
+<<<<<<< Updated upstream
+=======
+                }*/
+            MS(Drive1, Drive2, Drive3, Drive4);
+
+            /*if(intake.RobotIntake == Intake.IntakeModes.IN){
+                telemetry.addData("Intake", "IN");
+            }
+            if(intake.RobotIntake == Intake.IntakeModes.OUT){
+                telemetry.addData("Intake", "OUT");
+            }
+            if(intake.RobotIntake == Intake.IntakeModes.STOP){
+                telemetry.addData("Intake", "STOP");
+            }
+
+            if(slider.RobotSlider == Sliders.SlidersModes.DOWN){
+                telemetry.addData("Slider", "DOWN");
+            }
+            if(slider.RobotSlider == Sliders.SlidersModes.UP){
+                telemetry.addData("Slider", "UP");
+            }
+            if(slider.RobotSlider == Sliders.SlidersModes.STOP){
+                telemetry.addData("Slider", "STOP");
+            }
+
+            if(ArmModes==1){
+                telemetry.addData("Arm", "IN");
+            }
+            if(ArmModes==-1){
+                telemetry.addData("Arm", "OUT");
+            }
+            if(ArmModes==0){
+                telemetry.addData("Arm", "STOP");
+            }*/
+
+            if(gamepad2.right_bumper){
+                slider.setPower(-0.5);
+            }else if(gamepad2.left_bumper){
+                slider.setPower(0.5);
+            }else{
+                slider.setPower(0);
+            }
+
+            if(gamepad2.a){
+                intake.setPower(-0.8);
+            }else if(gamepad2.b){
+                intake.setPower(0.8);
+            }else{
+                intake.setPower(0);
+            }
+
+            if(armup!=0 && armdown!=0){
+                arm.setPower(0);
+                ArmModes=0;
+            }else {
+                if(armdown!=0 || armup!=0) {
+                    if (armdown<armup)
+                    {
+                        arm.setPower(-armup);
+                        ArmModes=1;
+                    }
+                    else
+                    {
+                        arm.setPower(armdown);
+                        ArmModes=-1;
+                    }
+>>>>>>> Stashed changes
                 }
             MS(Drive1, Drive2, Drive3, Drive4);
 
