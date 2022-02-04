@@ -74,11 +74,8 @@ public class BlockDetection extends LinearOpMode {
 
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_BGR2YCrCb);
             Core.extractChannel(YCrCb, Cb, 2);
-<<<<<<< Updated upstream
             Imgproc.threshold(Cb, tholdMat, 120, 255, Imgproc.THRESH_BINARY_INV);
-=======
             Imgproc.threshold(Cb, tholdMat, 145, 255, Imgproc.THRESH_BINARY_INV);
->>>>>>> Stashed changes
 
 
             //   double[] bigSquarePointValues = tholdMat.get(BigSquarePointY, BigSquarePointX);
@@ -96,7 +93,6 @@ public class BlockDetection extends LinearOpMode {
             Left_percent = Math.round(big_value*100.0);
             Right_percent = Math.round(small_value*100.0);
 
-<<<<<<< Updated upstream
              Imgproc.rectangle(input, LeftSquare1, LeftSquare2, BLACK);
              Imgproc.rectangle(input, RightSquare1, RightSquare2, BLACK);
 
@@ -105,11 +101,8 @@ public class BlockDetection extends LinearOpMode {
             telemetry.addData("Procentaj stanga:", Math.round(big_value*100));
             telemetry.addData("Procentaj dreapta:", Math.round(small_value*100));
             telemetry.update();
-=======
 //             Imgproc.rectangle(tholdMat, LeftSquare1, LeftSquare2, BLACK);
 //             Imgproc.rectangle(tholdMat, RightSquare1, RightSquare2, BLACK);
-
->>>>>>> Stashed changes
 
             return tholdMat;
         }
