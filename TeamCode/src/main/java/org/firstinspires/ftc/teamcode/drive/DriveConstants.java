@@ -18,7 +18,8 @@ import org.firstinspires.ftc.teamcode.drive.motors.GoBILDA5202Series_435RPM;
  * and op modes themselves.
  */
 @Config
-public class DriveConstants {
+public class
++DriveConstants {
 
     /*
      * These are motor constants that should be listed online for your motors.
