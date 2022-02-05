@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.drive.structure;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
 public class Carusel extends LinearOpMode {
     public DcMotor Duck=null;
+    public boolean reset = true;
 
-    public Carusel.DuckModes RobotDuck = Carusel.DuckModes.STOP;
+    public DuckModes RobotDuck = DuckModes.STOP;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -25,6 +27,7 @@ public class Carusel extends LinearOpMode {
         hwMap = ahwMap;
         // Define and Initialize Motors
         Duck = hwMap.get(DcMotor.class, "Duck");
+        if(reset){ Duck.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); reset=false;}
         Duck.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Duck.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Duck.setPower(0);
@@ -33,11 +36,11 @@ public class Carusel extends LinearOpMode {
     public void update(){
         switch (RobotDuck){
             case IN:{
-                Duck.setPower(0.3);
+                Duck.setPower(0.05);
                 break;
             }
             case OUT:{
-                Duck.setPower(-0.3);
+                Duck.setPower(-0.05);
                 break;
             }
             case STOP:{
@@ -47,10 +50,10 @@ public class Carusel extends LinearOpMode {
         }
     }
 
-    public void switchToIN() {RobotDuck = Carusel.DuckModes.IN;}
+    public void switchToIN() {RobotDuck = DuckModes.IN;}
 
-    public void switchToOUT() {RobotDuck = Carusel.DuckModes.OUT;}
+    public void switchToOUT() {RobotDuck = DuckModes.OUT;}
 
-    public void switchToSTOP() {RobotDuck = Carusel.DuckModes.STOP;}
+    public void switchToSTOP() {RobotDuck = DuckModes.STOP;}
 }
 

@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.drive.motors.GoBILDA5202Series_435RPM;
+import org.firstinspires.ftc.teamcode.drive.motors.*;
 
 /*
  * Constants shared between multiple drive types.
@@ -18,8 +18,7 @@ import org.firstinspires.ftc.teamcode.drive.motors.GoBILDA5202Series_435RPM;
  * and op modes themselves.
  */
 @Config
-public class
-+DriveConstants {
+public class DriveConstants {
 
     /*
      * These are motor constants that should be listed online for your motors.
@@ -39,7 +38,7 @@ public class
      */
     public static final boolean RUN_USING_ENCODER = true;
     public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0,
-            17.06236669507966);
+            17.0623666);
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -49,9 +48,9 @@ public class
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = 2; // in
+    public static double WHEEL_RADIUS = 1.98; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 1; // in
+    public static double TRACK_WIDTH = 10.62; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -70,10 +69,10 @@ public class
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
-    public static double MAX_VEL = 55;
-    public static double MAX_ACCEL = 30;
-    public static double MAX_ANG_VEL = Math.toRadians(60);
-    public static double MAX_ANG_ACCEL = Math.toRadians(60);
+    public static double MAX_VEL = 63;
+    public static double MAX_ACCEL = 63;
+    public static double MAX_ANG_VEL = 6;
+    public static double MAX_ANG_ACCEL = 6;
 
 
     public static double encoderTicksToInches(double ticks) {
@@ -89,4 +88,3 @@ public class
         return 32767 / ticksPerSecond;
     }
 }
-

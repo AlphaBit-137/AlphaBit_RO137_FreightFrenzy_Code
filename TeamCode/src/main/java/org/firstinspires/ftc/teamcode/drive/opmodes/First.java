@@ -68,13 +68,28 @@ public class First extends LinearOpMode {
             //Initiallizam variabilele
             double Front, Turn, Sum, Diff, Side, Drive1, Drive2, Drive3, Drive4;
 
+
+
+            //Speed Modes
+            if(gamepad1.right_bumper) {
+                if(Chose)Limit=Limit+0.1;
+                if(Limit>1)Limit=1;
+                Chose = false;
+
+            } else Chose=true;
+
+            if(gamepad1.left_bumper) {
+                if(Chose2)Limit=Limit-0.1;
+                if(Limit<0.3)Limit=0.3;
+                Chose2 = false;
+
+            } else {Chose2=true; }
             Front = Range.clip(gamepad1.left_stick_y, -Limit, Limit);
             Turn = Range.clip(-gamepad1.right_stick_x, -Limit, Limit);
             Side = Range.clip(gamepad1.left_stick_x, -Limit, Limit);
 
             double armup = Range.clip(gamepad2.right_trigger, 0,0.3);
             double armdown = Range.clip(gamepad2.left_trigger,0,0.3);
-
 
             //Calcularea puterii redate motoarelor
             Sum = Range.clip(Front + Side, -1.0, 1.0);
@@ -85,22 +100,6 @@ public class First extends LinearOpMode {
             Drive3 = Range.clip(Diff - 2*Turn, -1.0, 1.0);
             Drive4 = Range.clip(Diff + 2*Turn, -1.0, 1.0);
 
-
-            //Speed Change
-            if(gamepad1.right_bumper) {
-                if(Chose)Limit=Limit+0.1;
-                if(Limit>1)Limit=1;
-                Chose = false;
-            } else Chose=true;
-
-            if(gamepad1.left_bumper) {
-                if(Chose2)Limit=Limit-0.1;
-                if(Limit<0.3)Limit=0.3;
-                Chose2 = false;
-            } else {Chose2=true; }
-
-
-            //THE DUCK
             if(gamepad2.x){
                 duck.switchToIN();
             }else if(gamepad2.y){
@@ -108,10 +107,15 @@ public class First extends LinearOpMode {
             }else {duck.switchToSTOP();}
 
 
-            //Arm
             if(!Assist.manual) {
                 if (gamepad2.dpad_up) {
                     Assist.Assist();
+                }
+                if (gamepad2.dpad_down){
+                    Assist.SlowAssist();
+                }
+                if(gamepad2.dpad_right){
+                    Assist.Complex();
                 }
             }
             else
@@ -137,11 +141,13 @@ public class First extends LinearOpMode {
                     else
                     {
                         Assist.arm.setPower(0);
+
                     }
+
                 }
             }
 
-            //Emergency Mode
+
             if (gamepad1.y && gamepad2.y)
             {
                 if (!Assist.manual)
@@ -149,8 +155,6 @@ public class First extends LinearOpMode {
                 else
                     Assist.manual=false;
             }
-
-
             // Verificarea individuala a motoarelor
             /*if(gamepad1.a){
                 BackLeftMotor.setPower(0.5);
@@ -177,7 +181,9 @@ public class First extends LinearOpMode {
             }
 */
 
-            //Intake
+
+
+
             if(gamepad2.a){
                 intake.switchToIN();
             }else if(gamepad2.b){
@@ -185,21 +191,15 @@ public class First extends LinearOpMode {
             }else{
                 intake.switchToSTOP();
             }
-
-
             MS(Drive1, Drive2, Drive3, Drive4);
-
 
             telemetry.addData("Motors", "BackLeft (%.2f), FrontRight (%.2f), FrontLeft (%.2f), BackRight (%.2f)", Drive1, Drive2, Drive3, Drive4);
             //telemetry.addData("Informatie:", "Atentie! Programul a fost stins.");
             telemetry.addData("Power Limit:", Limit + "%");
-            //telemetry.addData("Poz Carusel",duck.Duck.getCurrentPosition());
+            telemetry.addData("Poz Carusel",duck.Duck.getCurrentPosition());
             telemetry.addData("Poz intake", intake.intakewing.getCurrentPosition());
-            if (!Assist.manual)
-                telemetry.addData("Mod brat:", "automat");
-            else
-                telemetry.addData("Mod brat:", "manual");
 
+//325, 82,
             intake.update();
             telemetry.update();
             duck.update();
