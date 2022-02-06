@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.drive.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -64,6 +65,7 @@ import org.firstinspires.ftc.teamcode.drive.structure.ChasisInit;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
+@Disabled
 @Autonomous(name="Auto Drive By Encoder", group="Tests")
 public class Encoder_Linear extends LinearOpMode {
 
