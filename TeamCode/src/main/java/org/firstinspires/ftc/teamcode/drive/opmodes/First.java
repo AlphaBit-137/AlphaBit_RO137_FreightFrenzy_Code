@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.drive.structure.ArmAssist;
+//import org.firstinspires.ftc.teamcode.drive.structure.ArmSlider;
 import org.firstinspires.ftc.teamcode.drive.structure.Carusel;
 import org.firstinspires.ftc.teamcode.drive.structure.Intake;
 
@@ -21,8 +22,9 @@ public class First extends LinearOpMode {
     public double Limit=0.8;
     public boolean Chose;
     public boolean Chose2;
-
+    public boolean assiston=false;
     ArmAssist Assist = new ArmAssist();
+    //  ArmSlider works = new ArmSlider();
     Intake intake = new Intake();
     Carusel duck = new Carusel();
 
@@ -60,6 +62,7 @@ public class First extends LinearOpMode {
         duck.init(hardwareMap);
         Assist.init(hardwareMap);
 
+        //  works.init(hardwareMap);
         runtime.reset();
         waitForStart();
 
@@ -68,22 +71,19 @@ public class First extends LinearOpMode {
             //Initiallizam variabilele
             double Front, Turn, Sum, Diff, Side, Drive1, Drive2, Drive3, Drive4;
 
-
-
             //Speed Modes
             if(gamepad1.right_bumper) {
                 if(Chose)Limit=Limit+0.1;
                 if(Limit>1)Limit=1;
                 Chose = false;
-
-            } else Chose=true;
+            }else Chose=true;
 
             if(gamepad1.left_bumper) {
                 if(Chose2)Limit=Limit-0.1;
                 if(Limit<0.3)Limit=0.3;
                 Chose2 = false;
+            }else Chose2=true;
 
-            } else {Chose2=true; }
             Front = Range.clip(gamepad1.left_stick_y, -Limit, Limit);
             Turn = Range.clip(-gamepad1.right_stick_x, -Limit, Limit);
             Side = Range.clip(gamepad1.left_stick_x, -Limit, Limit);
@@ -100,90 +100,41 @@ public class First extends LinearOpMode {
             Drive3 = Range.clip(Diff - 2*Turn, -1.0, 1.0);
             Drive4 = Range.clip(Diff + 2*Turn, -1.0, 1.0);
 
+            //Intake Reset
+            if(gamepad2.right_bumper){
+                intake.Reset();
+            }else if(gamepad2.left_bumper){
+                intake.Reset2();
+            }
+
+            //Duck
             if(gamepad2.x){
                 duck.switchToIN();
-            }else if(gamepad2.y){
-                duck.switchToOUT();
-            }else {duck.switchToSTOP();}
+            } else {duck.switchToSTOP();}
 
-
-            if(!Assist.manual) {
-                if (gamepad2.dpad_up) {
-                    Assist.Assist();
-                }
-                if (gamepad2.dpad_down){
-                    Assist.SlowAssist();
-                }
-                if(gamepad2.dpad_right){
-                    Assist.Complex();
-                }
-            }
-            else
-            {
-                if (gamepad2.right_bumper)
-                    Assist.slider.setPower(0.6);
-                else if(gamepad2.left_bumper)
-                    Assist.slider.setPower(-0.6);
-
-                if(armup!=0 && armdown!=0){
-                    Assist.arm.setPower(0);
-                }else {
-                    if(armdown!=0 || armup!=0) {
-                        if (armdown<armup)
-                        {
-                            Assist.arm.setPower(-0.6);
-                        }
-                        else
-                        {
-                            Assist.arm.setPower(0.6);
-                        }
-                    }
-                    else
-                    {
-                        Assist.arm.setPower(0);
-
-                    }
-
-                }
+            //Arm
+            if(gamepad2.dpad_up){
+                intake.Reset2();
+                intake.Reset();
+                Assist.Assist_Strong();
+            }else if(gamepad2.dpad_down){
+                intake.Reset2();
+                intake.Reset();
+                Assist.Assist_Weak();
+            }else if(gamepad2.dpad_right){
+                intake.Reset2();
+                intake.Reset();
+                Assist.Complex();
             }
 
-
-            if (gamepad1.y && gamepad2.y)
-            {
-                if (!Assist.manual)
-                    Assist.manual=true;
-                else
-                    Assist.manual=false;
-            }
-            // Verificarea individuala a motoarelor
-            /*if(gamepad1.a){
-                BackLeftMotor.setPower(0.5);
-            }else{
-                BackLeftMotor.setPower(0);
-            }
-
-            if(gamepad1.b){
-                BackRightMotor.setPower(0.5);
-            }else{
-                BackRightMotor.setPower(0);
-            }
-
-            if(gamepad1.x){
-                FrontLeftMotor.setPower(0.5);
-            }else{
-                FrontLeftMotor.setPower(0);
-            }
-
-            if(gamepad1.y){
-                FrontRightMotor.setPower(0.5);
-            }else{
-                FrontRightMotor.setPower(0);+
-            }
+/*             if(gamepad2.dpad_up){
+                 works.RobotPos = ArmSlider.Armpos.STRONG;
+             }else if(gamepad2.dpad_down){
+                 works.RobotPos =ArmSlider.Armpos.WEAK;
+             }
 */
 
-
-
-
+            //Intake
             if(gamepad2.a){
                 intake.switchToIN();
             }else if(gamepad2.b){
@@ -199,10 +150,9 @@ public class First extends LinearOpMode {
             telemetry.addData("Poz Carusel",duck.Duck.getCurrentPosition());
             telemetry.addData("Poz intake", intake.intakewing.getCurrentPosition());
 
-//325, 82,
+            duck.update();
             intake.update();
             telemetry.update();
-            duck.update();
 
         }
     }

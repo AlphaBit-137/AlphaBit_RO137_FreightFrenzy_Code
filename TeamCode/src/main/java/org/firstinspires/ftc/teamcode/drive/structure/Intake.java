@@ -21,11 +21,6 @@ public class Intake extends LinearOpMode {
         OUT,
         STOP
     }
-
-    public Intake(){
-
-    }
-
     HardwareMap hwMap = null;
 
     public void init(HardwareMap ahwMap) {
@@ -33,7 +28,8 @@ public class Intake extends LinearOpMode {
         hwMap = ahwMap;
         // Define and Initialize Motors
         intakewing = hwMap.get(DcMotor.class, "Intake");
-        intakewing.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakewing.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakewing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakewing.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakewing.setPower(0);
     }
@@ -41,11 +37,11 @@ public class Intake extends LinearOpMode {
     public void update(){
         switch (RobotIntake){
             case IN:{
-                intakewing.setPower(-0.8);
+                intakewing.setPower(-1);
                 break;
             }
             case OUT:{
-                intakewing.setPower(0.8);
+                intakewing.setPower(1);
                 break;
             }
             case STOP:{
@@ -53,6 +49,33 @@ public class Intake extends LinearOpMode {
                 break;
             }
         }
+    }
+//up -1895,
+
+    public void Reset(){
+        intakewing.setTargetPosition(-725);
+        intakewing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        intakewing.setPower(1);
+        while(intakewing.isBusy()){
+
+        }
+        intakewing.setPower(0);
+        intakewing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void Reset2(){
+
+        if(intakewing.getCurrentPosition()>0){
+            intakewing.setTargetPosition(intakewing.getCurrentPosition()-intakewing.getCurrentPosition());
+        }else intakewing.setTargetPosition(intakewing.getCurrentPosition()+(-intakewing.getCurrentPosition()));
+
+        intakewing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        intakewing.setPower(1);
+        while(intakewing.isBusy()){
+
+        }
+        intakewing.setPower(0);
+        intakewing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void switchToIN() {RobotIntake = IntakeModes.IN;}

@@ -1,15 +1,23 @@
 package org.firstinspires.ftc.teamcode.drive.structure;
 
 
+import android.telephony.CellSignalStrength;
+import android.transition.Slide;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.internal.camera.delegating.DelegatingCaptureSequence;
 
-public class ArmAssist extends LinearOpMode {
+public class ArmAssist  extends LinearOpMode {
+
     public DcMotor arm;
     public DcMotor slider;
-    public boolean manual=false;
+
+    ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -44,196 +52,86 @@ public class ArmAssist extends LinearOpMode {
         slider.setPower(0);
     }
 
-
-    public enum Armpos{
-        UP,
-        MEDIUM,
-        DOWN,
-        STOP,
-        COMPLEX,
-
-    }
-
-    public void reset()
-    {
-        manual = false;
-    }
-
-    public Armpos pos = Armpos.STOP;
-
-    public void Assist(){
-
-        slider.setTargetPosition(1000);
-        slider.setPower(0.5);
-        slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (slider.getCurrentPosition() < 1000 && manual == false) {
-
-        }
-        if (manual == false)
-            slider.setPower(0);
-
-        arm.setTargetPosition(-1076);
-        arm.setPower(0.6);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (arm.isBusy() && manual == false) {
-
-        }
-        if (manual == false)
-            arm.setPower(0);
+    public void STOP(){
+        ///Emergency Stop
 
         arm.setTargetPosition(0);
         arm.setPower(0.6);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while(arm.isBusy() && manual==false){
+        runtime.reset();
+        while(arm.isBusy() && runtime.seconds()<2.0){
 
         }
         arm.setPower(0);
 
+
         slider.setTargetPosition(10);
         slider.setPower(0.5);
         slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while(slider.getCurrentPosition() > 10 &&  manual==false){
+        runtime.reset();
+        while(slider.getCurrentPosition() > 10 && runtime.seconds()<2.0){
 
         }
         slider.setPower(0);
+
     }
-        public void SlowAssist()
+    public void Assist_Strong(){
+        //Powerful Throw
+
+        SliderMovement(1000, 0.5, 1, 2.0);
+        ArmMovement(-1076, 0.6, 2.0);
+        ArmMovement(0, 0.6, 2.0);
+        SliderMovement(10, 0.5, -1, 2.0);
+
+    }
+    public void Assist_Weak(){
+
+        //Slow Throw
+        SliderMovement(1000, 0.5, 1, 25);
+        ArmMovement(-1076, 0.4, 4.0);
+        ArmMovement(0, 0.4, 4.0);
+        SliderMovement(10, 0.5, -1, 5);
+
+    }
+    public void Complex(){
+        //Balanced Throw
+
+        SliderMovement(1000, 0.5, 1, 5.0);
+        ArmMovement(-500, 0.6, 5.0);
+        SliderMovement(10, 0.5, -1, 5.0);
+        ArmMovement(-1076, 0.6, 5.0);
+        SliderMovement(1000, 0.5, 1, 5.0);
+        ArmMovement(0, 0.6, 5.0);
+        SliderMovement(10, 0.5, -1, 5.0);
+    }
+
+    public void SliderMovement(int position, double power, int direction, double limit)
+    {
+        slider.setTargetPosition(position);
+        slider.setPower(power);
+        slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        runtime.reset();
+        if (direction > 0)
+            while (slider.getCurrentPosition() < position && runtime.seconds() < limit){
+
+            }
+        else
+            while (slider.getCurrentPosition() > position && runtime.seconds() < limit) {
+
+            }
+        slider.setPower(0);
+    }
+
+    public void ArmMovement(int position, double power, double limit){
+        arm.setTargetPosition(position);
+        arm.setPower(power);
+        arm.setMode((DcMotor.RunMode.RUN_TO_POSITION));
+        runtime.reset();
+        while (arm.isBusy() && runtime.seconds() < limit)
         {
-            slider.setTargetPosition(1000);
-            slider.setPower(0.5);
-            slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while (slider.getCurrentPosition() < 1000 && manual == false) {
 
-            }
-            if (manual == false)
-                slider.setPower(0);
-
-            arm.setTargetPosition(-1076);
-            arm.setPower(0.4);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while (arm.isBusy() && manual == false) {
-
-            }
-            if (manual == false)
-                arm.setPower(0);
-
-            arm.setTargetPosition(0);
-            arm.setPower(0.1);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while(arm.isBusy() && manual==false){
-
-            }
-            arm.setPower(0);
-
-            slider.setTargetPosition(10);
-            slider.setPower(0.5);
-            slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while(slider.getCurrentPosition() > 10 &&  manual==false){
-
-            }
-            slider.setPower(0);
         }
-        public void Complex(){
-
-            slider.setTargetPosition(850);
-            slider.setPower(0.5);
-            slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while(slider.getCurrentPosition() < 800){
-
-            }
-            slider.setPower(0);
-
-            arm.setTargetPosition(-500);
-            arm.setPower(0.6);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while(arm.isBusy()){
-
-            }
-            arm.setPower(0);
-
-            slider.setTargetPosition(10);
-            slider.setPower(0.5);
-            slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while (slider.getCurrentPosition() > 10){
-
-            }
-            slider.setPower(0);
-
-            arm.setTargetPosition(-1076);
-            arm.setPower(0.6);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while(arm.isBusy()){
-
-            }
-            arm.setPower(0);
-
-            slider.setTargetPosition(1000);
-            slider.setPower(0.5);
-            slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while (slider.getCurrentPosition() < 1000){
-
-            }
-            slider.setPower(0);
-
-            arm.setTargetPosition(0);
-            arm.setPower(0.6);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while(arm.isBusy()){
-
-            }
-            arm.setPower(0);
-
-            slider.setTargetPosition(10);
-            slider.setPower(0.5);
-            slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while(slider.getCurrentPosition() > 10){
-
-            }
-            slider.setPower(0);
-
+        arm.setPower(0);
     }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
