@@ -17,18 +17,22 @@ public class TestDetection extends LinearOpMode {
         bloc.init(hardwareMap);
 
         while (!isStarted()) {
-            if (bloc.Left_percent < 85 && bloc.Right_percent < 85) {
-                telemetry.addData("Cazul", 4);
-                caz = 4;
+            if (bloc.Left_percent > 70) {
+                telemetry.addData("Cazul", 3);
+                caz = 3;
             }
-            if (bloc.Left_percent <85 && bloc.Right_percent > 85) {
-                telemetry.addData("Cazul", 1);
+            if  (bloc.Right_percent > 70) {
+                telemetry.addData("Cazul", 2);
+                caz = 2;
+            }
+            else{
+               telemetry.addData("Cazul",1);
                 caz = 1;
             }
-            if (bloc.Left_percent > 85 && bloc.Right_percent > 85) {
-                telemetry.addData("Cazul", 0);
-                caz = 0;
+            while(isStarted()){
+                telemetry.addData("cazul",caz);
             }
+
             telemetry.addData("LeftPercent", bloc.Left_percent);
             telemetry.addData("RightPercent", bloc.Right_percent);
             telemetry.update();

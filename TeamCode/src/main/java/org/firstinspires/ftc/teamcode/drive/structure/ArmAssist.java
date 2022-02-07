@@ -78,45 +78,41 @@ public class ArmAssist  extends LinearOpMode {
     public void Assist_Strong(){
         //Powerful Throw
 
-        SliderMovement(1000, 0.5, 1, 2.0);
+        SliderMovement(-1150, 0.5, -1, 2.0);
         ArmMovement(-1076, 0.6, 2.0);
         ArmMovement(0, 0.6, 2.0);
-        SliderMovement(10, 0.5, -1, 2.0);
+        SliderMovement(-10, 0.5, 1, 2.0);
 
     }
     public void Assist_Weak(){
 
         //Slow Throw
-        SliderMovement(1000, 0.5, 1, 25);
+        SliderMovement(-1150, 0.5, -1, 25);
         ArmMovement(-1076, 0.4, 4.0);
         ArmMovement(0, 0.4, 4.0);
-        SliderMovement(10, 0.5, -1, 5);
+        SliderMovement(-10, 0.5, 1, 5);
 
     }
     public void Complex(){
         //Balanced Throw
 
-        SliderMovement(1000, 0.5, 1, 5.0);
+        SliderMovement(1050, 0.7, 1, 5.0);
         ArmMovement(-500, 0.6, 5.0);
-        SliderMovement(10, 0.5, -1, 5.0);
-        ArmMovement(-1076, 0.6, 5.0);
-        SliderMovement(1000, 0.5, 1, 5.0);
-        ArmMovement(0, 0.6, 5.0);
-        SliderMovement(10, 0.5, -1, 5.0);
+        SliderMovement(10, 0.7, -1, 5.0);
+        ArmMovement(-1100, 0.2, 8.0);
+        SliderMovement(1000, 0.7, 1, 5.0);
+        ArmMovement(10, 0.6, 5.0);
+        SliderMovement(0, 0.5, -1, 5.0);
     }
 
     public void SliderMovement(int position, double power, int direction, double limit)
     {
-        slider.setTargetPosition(position);
+        slider.setTargetPosition(-position);
         slider.setPower(power);
         slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         runtime.reset();
         if (direction > 0)
-            while (slider.getCurrentPosition() < position && runtime.seconds() < limit){
-
-            }
-        else
-            while (slider.getCurrentPosition() > position && runtime.seconds() < limit) {
+            while (slider.isBusy() && runtime.seconds() < limit) {
 
             }
         slider.setPower(0);
@@ -131,7 +127,30 @@ public class ArmAssist  extends LinearOpMode {
         {
 
         }
+        if(arm.isBusy() && runtime.seconds() >limit)STOP();
         arm.setPower(0);
+    }
+
+    public void RobotDown(double power) {
+        arm.setPower(power);
+    }
+
+    public void RobotUP(double power) {
+        arm.setPower(-power);
+    }
+
+    public void RobotStop() {
+        arm.setPower(0);
+    }
+
+    public void RobotDownS(){
+        slider.setPower(0.6);
+    }
+    public void RobotUpS(){
+        slider.setPower(-0.6);
+    }
+    public void RobotStopS(){
+        slider.setPower(0);
     }
 
 }
