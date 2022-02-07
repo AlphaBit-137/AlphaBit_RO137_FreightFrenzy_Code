@@ -46,23 +46,24 @@ public class BlockDetection extends LinearOpMode {
 
         // Working Mat variables
         Mat YCrCb = new Mat(); // This will store the whole YCrCb channel
+
         Mat Cb = new Mat(); // This will store the Cb Channel (part from YCrCb)
         Mat tholdMat = new Mat(); // This will store the threshold
 
-        public Point LeftSquare1 = new Point(150, 155);
-        public Point LeftSquare2 = new Point(190, 110);
+        public Point LeftSquare1 = new Point(37, 231);
+        public Point LeftSquare2 = new Point(67, 189);
 
-        public Point RightSquare1 = new Point(75, 155);
-        public Point RightSquare2 = new Point(115, 110);
+        public Point RightSquare1 = new Point(245, 217);
+        public Point RightSquare2 = new Point(289, 166);
 
         static final Rect LEFT_ROI = new Rect(
-                new Point (75, 155),
-                new Point (115, 110)
+                new Point (37, 231),
+                new Point (67, 189)
         );
 
         static final Rect RIGHT_ROI = new Rect(
-                new Point (150, 155),
-                new Point (190, 110)
+                new Point (245, 217),
+                new Point (289, 166)
         );
 
         Scalar BLACK = new Scalar(0, 0, 0);
@@ -74,7 +75,7 @@ public class BlockDetection extends LinearOpMode {
 
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_BGR2YCrCb);
             Core.extractChannel(YCrCb, Cb, 2);
-            Imgproc.threshold(Cb, tholdMat, 120, 255, Imgproc.THRESH_BINARY_INV);
+            Imgproc.threshold(Cb, tholdMat, 133, 256, Imgproc.THRESH_BINARY_INV);
             Imgproc.threshold(Cb, tholdMat, 145, 255, Imgproc.THRESH_BINARY_INV);
 
 
@@ -96,11 +97,11 @@ public class BlockDetection extends LinearOpMode {
              Imgproc.rectangle(input, LeftSquare1, LeftSquare2, BLACK);
              Imgproc.rectangle(input, RightSquare1, RightSquare2, BLACK);
 
-            telemetry.addData("Valoarea stanga:",(int)Core.sumElems(Left).val[0]);
-            telemetry.addData("Valoarea dreapta:", (int)Core.sumElems(Right).val[0]);
-            telemetry.addData("Procentaj stanga:", Math.round(big_value*100));
-            telemetry.addData("Procentaj dreapta:", Math.round(small_value*100));
-            telemetry.update();
+           // telemetry.addData("Valoarea stanga:",(int)Core.sumElems(Left).val[0]);
+            //telemetry.addData("Valoarea dreapta:", (int)Core.sumElems(Right).val[0]);
+          //  telemetry.addData("Procentaj stanga:", Math.round(big_value*100));
+            //telemetry.addData("Procentaj dreapta:", Math.round(small_value*100));
+           // telemetry.update();
 //             Imgproc.rectangle(tholdMat, LeftSquare1, LeftSquare2, BLACK);
 //             Imgproc.rectangle(tholdMat, RightSquare1, RightSquare2, BLACK);
 

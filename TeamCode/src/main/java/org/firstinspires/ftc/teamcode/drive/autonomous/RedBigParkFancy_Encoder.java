@@ -79,7 +79,7 @@ public class RedBigParkFancy_Encoder extends LinearOpMode {
     public DcMotor FrontRightMotor = null;
     public DcMotor FrontLeftMotor = null;
     public DcMotor BackRightMotor = null;
-    BlockDetection test = new BlockDetection();
+    // BlockDetection test = new BlockDetection();
     int caz;
     ArmAssist Assist = new ArmAssist();
     Intake intake = new Intake();
@@ -102,9 +102,8 @@ public class RedBigParkFancy_Encoder extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        intake.init(hardwareMap);
         Assist.init(hardwareMap);
-        test.init(hardwareMap);
+       /* test.init(hardwareMap);
         while (!isStarted()) {
             if (test.Left_percent < 85 && test.Right_percent < 85) {
                 telemetry.addData("Cazul", 4);
@@ -115,7 +114,7 @@ public class RedBigParkFancy_Encoder extends LinearOpMode {
                 caz = 2;
             }
 
-        }
+        }*/
         BackLeftMotor = hardwareMap.get(DcMotor.class, "Back_Left");
         FrontRightMotor = hardwareMap.get(DcMotor.class, "Front_Right");
         FrontLeftMotor = hardwareMap.get(DcMotor.class, "Front_Left");
@@ -146,7 +145,7 @@ public class RedBigParkFancy_Encoder extends LinearOpMode {
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        StrafeLeft(0.5,2.9,1.45);
+        StrafeRight(0.5,2.9,1.45);
         if(caz == 1) {encoderDriveBack(0.4,1.7,1.6);}
         else if(caz == 2) {encoderDriveBack(0.4,1.3,1.3);}
         else{encoderDriveBack(0.4,1.1,1.0);}
@@ -157,10 +156,9 @@ public class RedBigParkFancy_Encoder extends LinearOpMode {
         sleep(100);
         encoderDriveForward(0.4,2.0,0.6);
         sleep(100);
-        StrafeLeft(0.5,2.7,1.9);
+        StrafeRight(0.5,2.7,1.9);
         sleep(100);
         encoderDriveForward(0.5,3.0,2);
-        sleep(100);
         intake.switchToIN();
         sleep(100);
         encoderDriveBack(0.5,5.0,5);
@@ -170,6 +168,7 @@ public class RedBigParkFancy_Encoder extends LinearOpMode {
         StrafeLeft(0.5,1.0,1.0);
         sleep(100);
         encoderDriveForward(0.5,5.0,5);
+
 
 
 
@@ -185,9 +184,9 @@ public class RedBigParkFancy_Encoder extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
-    public void StrafeRight(double speed,
-                            double inches,
-                            double timeoutS) {
+    public void StrafeLeft(double speed,
+                           double inches,
+                           double timeoutS) {
 
         int newFrontLeftTarget;
         int newFrontRightTarget;
@@ -198,10 +197,10 @@ public class RedBigParkFancy_Encoder extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newBackLeftTarget = BackLeftMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
-            newBackRightTarget = BackRightMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
-            newFrontRightTarget = FrontRightMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
-            newFrontLeftTarget = FrontLeftMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
+            newBackLeftTarget = BackLeftMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
+            newBackRightTarget = BackRightMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
+            newFrontRightTarget = FrontRightMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
+            newFrontLeftTarget = FrontLeftMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
 
             BackRightMotor.setTargetPosition(newBackRightTarget);
             BackLeftMotor.setTargetPosition(newBackLeftTarget);
@@ -256,7 +255,6 @@ public class RedBigParkFancy_Encoder extends LinearOpMode {
             sleep(1000);   // optional pause after each move
         }
     }
-
     public void Spin(double speed,
                      double inches,
                      double timeoutS) {
@@ -270,10 +268,10 @@ public class RedBigParkFancy_Encoder extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newBackLeftTarget = BackLeftMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
-            newBackRightTarget = BackRightMotor.getCurrentPosition() +(int)(inches * COUNTS_PER_INCH);
-            newFrontRightTarget = FrontRightMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
-            newFrontLeftTarget = FrontLeftMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
+            newBackLeftTarget = BackLeftMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
+            newBackRightTarget = BackRightMotor.getCurrentPosition() -(int)(inches * COUNTS_PER_INCH);
+            newFrontRightTarget = FrontRightMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
+            newFrontLeftTarget = FrontLeftMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
 
             BackRightMotor.setTargetPosition(newBackRightTarget);
             BackLeftMotor.setTargetPosition(newBackLeftTarget);
@@ -400,9 +398,9 @@ public class RedBigParkFancy_Encoder extends LinearOpMode {
         }
     }
 
-    public void StrafeLeft(double speed,
-                           double inches,
-                           double timeoutS) {
+    public void StrafeRight(double speed,
+                            double inches,
+                            double timeoutS) {
 
         int newFrontLeftTarget;
         int newFrontRightTarget;
@@ -413,10 +411,10 @@ public class RedBigParkFancy_Encoder extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newBackLeftTarget = BackLeftMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
-            newBackRightTarget = BackRightMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
-            newFrontRightTarget = FrontRightMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
-            newFrontLeftTarget = FrontLeftMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
+            newBackLeftTarget = BackLeftMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
+            newBackRightTarget = BackRightMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
+            newFrontRightTarget = FrontRightMotor.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
+            newFrontLeftTarget = FrontLeftMotor.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
 
             BackRightMotor.setTargetPosition(newBackRightTarget);
             BackLeftMotor.setTargetPosition(newBackLeftTarget);

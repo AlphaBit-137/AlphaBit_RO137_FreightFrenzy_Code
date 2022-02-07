@@ -52,7 +52,7 @@ public class Intake extends LinearOpMode {
     }
 //up -1895,
 
-    public void Reset(){
+   /* public void Reset(){
         intakewing.setTargetPosition(-725);
         intakewing.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         intakewing.setPower(1);
@@ -76,7 +76,7 @@ public class Intake extends LinearOpMode {
         }
         intakewing.setPower(0);
         intakewing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
+    }*/
 
     public void switchToIN() {RobotIntake = IntakeModes.IN;}
 
