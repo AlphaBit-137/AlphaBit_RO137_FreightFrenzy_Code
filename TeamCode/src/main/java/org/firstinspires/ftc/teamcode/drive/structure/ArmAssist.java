@@ -8,30 +8,28 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.internal.camera.delegating.DelegatingCaptureSequence;
 
-public class ArmAssist  extends LinearOpMode {
+public class ArmAssist extends LinearOpMode {
 
     public DcMotor arm;
     public DcMotor slider;
-
+    public Servo servo;
     ElapsedTime runtime = new ElapsedTime();
-
-    @Override
-    public void runOpMode() throws InterruptedException {
-
-    }
-
+    Armpos RobotPos = Armpos.STOP;
     HardwareMap hwMap = null;
+
+    public int x=0;
     public void init(HardwareMap ahwMap) {
-        // Save reference to Hardware map
+
         hwMap = ahwMap;
         // Define and Initialize Motors
         slider = hwMap.get(DcMotor.class,"Slider");
         arm = hwMap.get(DcMotor.class, "Arm");
-
+        servo = hwMap.get(Servo.class, "Servo");
 
         slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -43,6 +41,7 @@ public class ArmAssist  extends LinearOpMode {
 
         arm.setDirection(DcMotor.Direction.FORWARD);
         slider.setDirection(DcMotor.Direction.FORWARD);
+        servo.setDirection(Servo.Direction.FORWARD);
 
         slider.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -50,8 +49,118 @@ public class ArmAssist  extends LinearOpMode {
 
         arm.setPower(0);
         slider.setPower(0);
+        servo.setPosition(0);
+    }
+    public enum Armpos{
+        Level1,
+        Level2,
+        Level3,
+        ArmUp,
+        ArmDown,
+        ArmS,
+        SliderUp,
+        SliderDown,
+        SliderStop,
+        STOP,
     }
 
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+    }
+    public void update() {
+        switch (RobotPos) {
+            case Level1: {
+                Closed();
+                SliderMovement(1600, -0.5, 1, 2.0);
+                ArmMovement(-500, 0.35, 2.0);
+                ArmMovement(-1050, 0.23, 2.0);
+                Opened();
+                sleep(100);
+                ArmMovement(0, 0.3, 2.0);
+                SliderMovement(10, 0.5, -1, 2.0);
+                Closed();
+                break;
+            }
+            case Level2: {
+                Closed();
+                SliderMovement(1600, 0.5, 1, 2.0);
+                ArmMovement(-500, 0.6, 2.0);
+                ArmMovement(-1100, 0.23, 2.0);
+                Opened();
+                ArmMovement(0, 0.4, 2.0);
+                SliderMovement(10, 0.5, -1, 2.0);
+                Closed();
+                break;
+            }
+            case Level3:{
+                Closed();
+                SliderMovement(1600, 0.5, 1, 2.0);
+                ArmMovement(-500, 0.35, 2.0);
+                ArmMovement(-1200, 0.23, 2.0);
+                Opened();
+                ArmMovement(0, 0.3, 2.0);
+                SliderMovement(10, 0.5, -1, 2.0);
+                Closed();
+                break;
+            }
+            case STOP: {
+                slider.setPower(0);
+                arm.setPower(0);
+                x=0;
+                break;
+            }
+            case ArmUp:{
+                slider.setPower(-0.3);
+                x=1;
+                break;
+            }
+                /*case ArmDown:{
+                    arm.setPower(-0.3);
+                }
+                case ArmS:{
+                    arm.setPower(0);
+                }
+                case SliderUp:{
+                    slider.setPower(0.4);
+                }
+                case SliderDown:{
+                    slider.setPower(-0.4);
+                }
+                case SliderStop:{
+                    slider.setPower(0);
+                }*/
+        }
+    }
+    public void SliderMovement(int position, double power, int direction, double limit)
+    {
+        slider.setTargetPosition(position);
+        slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slider.setPower(power);
+        runtime.reset();
+        if (direction > 0)
+            while (slider.getCurrentPosition() < position && runtime.seconds() < limit){
+
+            }
+        else
+            while (slider.getCurrentPosition() > position && runtime.seconds() < limit) {
+
+            }
+        slider.setPower(0);
+    }
+
+    public void ArmMovement(int position, double power, double limit){
+        arm.setTargetPosition(position);
+        arm.setMode((DcMotor.RunMode.RUN_TO_POSITION));
+        arm.setPower(power);
+        runtime.reset();
+        while (arm.isBusy() && runtime.seconds() < limit)
+        {
+
+        }
+        if(arm.isBusy() && runtime.seconds() > limit)STOP();
+        arm.setPower(0);
+    }
     public void STOP(){
         ///Emergency Stop
 
@@ -75,82 +184,19 @@ public class ArmAssist  extends LinearOpMode {
         slider.setPower(0);
 
     }
-    public void Assist_Strong(){
-        //Powerful Throw
+    public void Opened(){servo.setPosition(0);}
 
-        SliderMovement(-1150, 0.5, -1, 2.0);
-        ArmMovement(-1076, 0.6, 2.0);
-        ArmMovement(0, 0.6, 2.0);
-        SliderMovement(-10, 0.5, 1, 2.0);
+    public void Closed(){servo.setPosition(0.3);}
 
-    }
-    public void Assist_Weak(){
+    public void switchTo1() {RobotPos = Armpos.Level1;}
 
-        //Slow Throw
-        SliderMovement(-1150, 0.5, -1, 25);
-        ArmMovement(-1076, 0.4, 4.0);
-        ArmMovement(0, 0.4, 4.0);
-        SliderMovement(-10, 0.5, 1, 5);
+    public void switchTo2() {RobotPos = Armpos.Level2;}
 
-    }
-    public void Complex(){
-        //Balanced Throw
+    public void switchTo3() {RobotPos = Armpos.Level3;}
 
-        SliderMovement(1050, 0.7, 1, 5.0);
-        ArmMovement(-500, 0.6, 5.0);
-        SliderMovement(10, 0.7, -1, 5.0);
-        ArmMovement(-1100, 0.2, 8.0);
-        SliderMovement(1000, 0.7, 1, 5.0);
-        ArmMovement(10, 0.6, 5.0);
-        SliderMovement(0, 0.5, -1, 5.0);
-    }
+    public void switchToArmUp() {RobotPos = Armpos.ArmUp;}
 
-    public void SliderMovement(int position, double power, int direction, double limit)
-    {
-        slider.setTargetPosition(-position);
-        slider.setPower(power);
-        slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        runtime.reset();
-        if (direction > 0)
-            while (slider.isBusy() && runtime.seconds() < limit) {
-
-            }
-        slider.setPower(0);
-    }
-
-    public void ArmMovement(int position, double power, double limit){
-        arm.setTargetPosition(position);
-        arm.setPower(power);
-        arm.setMode((DcMotor.RunMode.RUN_TO_POSITION));
-        runtime.reset();
-        while (arm.isBusy() && runtime.seconds() < limit)
-        {
-
-        }
-        if(arm.isBusy() && runtime.seconds() >limit)STOP();
-        arm.setPower(0);
-    }
-
-    public void RobotDown(double power) {
-        arm.setPower(power);
-    }
-
-    public void RobotUP(double power) {
-        arm.setPower(-power);
-    }
-
-    public void RobotStop() {
-        arm.setPower(0);
-    }
-
-    public void RobotDownS(){
-        slider.setPower(0.6);
-    }
-    public void RobotUpS(){
-        slider.setPower(-0.6);
-    }
-    public void RobotStopS(){
-        slider.setPower(0);
-    }
+    public void switchToSTOP() {RobotPos = Armpos.STOP;}
 
 }
+

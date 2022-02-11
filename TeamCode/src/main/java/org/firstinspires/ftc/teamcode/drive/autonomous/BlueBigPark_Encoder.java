@@ -35,7 +35,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 import org.firstinspires.ftc.teamcode.drive.structure.ArmAssist;
 import org.firstinspires.ftc.teamcode.drive.structure.Carusel;
 import org.firstinspires.ftc.teamcode.drive.structure.Intake;
@@ -151,7 +150,6 @@ public class BlueBigPark_Encoder extends LinearOpMode {
         else if(caz == 2) {encoderDriveBack(0.4,1.3,1.3);}
         else{encoderDriveBack(0.4,1.1,1.0);}
         sleep(100);
-        Assist.Complex();
         sleep(100);
         Spin(0.5,2.3,3.3);
         sleep(100);
