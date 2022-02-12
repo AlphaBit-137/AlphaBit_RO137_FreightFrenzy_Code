@@ -108,41 +108,29 @@ public class First extends LinearOpMode {
             Drive3 = Range.clip(Diff - 2*Turn, -1.0, 1.0);
             Drive4 = Range.clip(Diff + 2*Turn, -1.0, 1.0);
 
-            /*if(gamepad2.right_bumper){
-                intake.TimeIntake();
-            }else if(gamepad2.left_bumper){
-                //
-                // intake.Reset2();
-            }*/
-
+            //Carusel
             if(gamepad2.x){
                 duck.switchToIN();
             } else {duck.switchToSTOP();}
 
+            //Pozitii Brat
             if (gamepad2.dpad_up) {
                 assist.switchTo3();
             } else {
                 assist.switchToSTOP();
             }
-
             if (gamepad2.dpad_right) {
                 assist.switchTo2();
             } else {
                 assist.switchToSTOP();
             }
-
-            if (gamepad2.right_bumper)
-            {
+            if (gamepad2.right_bumper) {
                 assist.switchToArmUp();
-            }
-            else
-            {
+            }else            {
                 assist.switchToSTOP();
             }
 
-            //assist.arm.setPower(armup);
-            //assist.arm.setPower(armdown);
-
+            //Intake
             if(gamepad2.a){
                 intake.switchToIN();
             }else if(gamepad2.b || IntakeStatus == Status.MOVING){
@@ -150,13 +138,8 @@ public class First extends LinearOpMode {
             }else{
                 intake.switchToSTOP();
             }
-
-            if (gamepad2.dpad_right)
-                intake.intakewing.setPower(1);
-
             if (Math.abs(intake.intakewing.getCurrentPosition()) >= 2850)
                 intake.switchToRESET();
-
             if (gamepad2.dpad_left)
             {
                 intake.ResetPosition();

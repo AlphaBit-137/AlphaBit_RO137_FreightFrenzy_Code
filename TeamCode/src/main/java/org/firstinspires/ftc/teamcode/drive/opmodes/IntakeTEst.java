@@ -39,6 +39,7 @@ public class IntakeTEst extends LinearOpMode {
                     intake.switchToOUT();
                 }
                 else{
+
                     intake.switchToSTOP();
                 }
             }

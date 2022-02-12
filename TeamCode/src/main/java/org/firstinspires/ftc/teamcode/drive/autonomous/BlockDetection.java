@@ -57,13 +57,13 @@ public class BlockDetection extends LinearOpMode {
         public Point RightSquare2 = new Point(289, 166);
 
         static final Rect LEFT_ROI = new Rect(
-                new Point (37, 231),
-                new Point (67, 189)
+                new Point (0, 239),
+                new Point (160, 0)
         );
 
         static final Rect RIGHT_ROI = new Rect(
-                new Point (245, 217),
-                new Point (289, 166)
+                new Point (160, 0),
+                new Point (319, 239)
         );
 
         Scalar BLACK = new Scalar(0, 0, 0);
@@ -75,8 +75,7 @@ public class BlockDetection extends LinearOpMode {
 
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_BGR2YCrCb);
             Core.extractChannel(YCrCb, Cb, 2);
-            Imgproc.threshold(Cb, tholdMat, 133, 256, Imgproc.THRESH_BINARY_INV);
-            Imgproc.threshold(Cb, tholdMat, 145, 255, Imgproc.THRESH_BINARY_INV);
+            Imgproc.threshold(Cb, tholdMat, 170, 255, Imgproc.THRESH_BINARY_INV);
 
 
             //   double[] bigSquarePointValues = tholdMat.get(BigSquarePointY, BigSquarePointX);
@@ -94,19 +93,18 @@ public class BlockDetection extends LinearOpMode {
             Left_percent = Math.round(big_value*100.0);
             Right_percent = Math.round(small_value*100.0);
 
-             Imgproc.rectangle(input, LeftSquare1, LeftSquare2, BLACK);
-             Imgproc.rectangle(input, RightSquare1, RightSquare2, BLACK);
+            Imgproc.rectangle(input, LeftSquare1, LeftSquare2, BLACK);
+            Imgproc.rectangle(input, RightSquare1, RightSquare2, BLACK);
 
-           // telemetry.addData("Valoarea stanga:",(int)Core.sumElems(Left).val[0]);
+            // telemetry.addData("Valoarea stanga:",(int)Core.sumElems(Left).val[0]);
             //telemetry.addData("Valoarea dreapta:", (int)Core.sumElems(Right).val[0]);
-          //  telemetry.addData("Procentaj stanga:", Math.round(big_value*100));
+            //  telemetry.addData("Procentaj stanga:", Math.round(big_value*100));
             //telemetry.addData("Procentaj dreapta:", Math.round(small_value*100));
-           // telemetry.update();
+            // telemetry.update();
 //             Imgproc.rectangle(tholdMat, LeftSquare1, LeftSquare2, BLACK);
 //             Imgproc.rectangle(tholdMat, RightSquare1, RightSquare2, BLACK);
 
             return tholdMat;
         }
     }
-
 }

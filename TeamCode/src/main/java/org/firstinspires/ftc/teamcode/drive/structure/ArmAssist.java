@@ -31,13 +31,11 @@ public class ArmAssist extends LinearOpMode {
         arm = hwMap.get(DcMotor.class, "Arm");
         servo = hwMap.get(Servo.class, "Servo");
 
-        slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         arm.setDirection(DcMotor.Direction.FORWARD);
         slider.setDirection(DcMotor.Direction.FORWARD);
