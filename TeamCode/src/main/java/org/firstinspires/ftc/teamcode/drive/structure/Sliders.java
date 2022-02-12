@@ -6,8 +6,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Sliders extends LinearOpMode {
     public DcMotor Slider = null;
-    public boolean IsUp =true;
-    public boolean IsDown= false;
 
     public SlidersModes RobotSlider = SlidersModes.STOP;
 

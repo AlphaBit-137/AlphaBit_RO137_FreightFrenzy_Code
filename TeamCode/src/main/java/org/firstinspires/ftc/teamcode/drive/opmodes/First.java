@@ -151,6 +151,9 @@ public class First extends LinearOpMode {
                 intake.switchToSTOP();
             }
 
+            if (gamepad2.dpad_right)
+                intake.intakewing.setPower(1);
+
             if (Math.abs(intake.intakewing.getCurrentPosition()) >= 2850)
                 intake.switchToRESET();
 
