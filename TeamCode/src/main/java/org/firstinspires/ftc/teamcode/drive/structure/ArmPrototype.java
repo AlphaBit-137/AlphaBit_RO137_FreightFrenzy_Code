@@ -14,8 +14,11 @@ public class ArmPrototype extends LinearOpMode {
     ServoStructure servo = new ServoStructure();
     Intake intake = new Intake();
 
+    private double pas = 0;
+
     Status SliderStatus = Status.STATIC;
     Status ArmStatus = Status.STATIC;
+    Status IntakeStatus = Status.STATIC;
 
     public enum Status{
         MOVING,
@@ -48,10 +51,10 @@ public class ArmPrototype extends LinearOpMode {
 
             if (gamepad2.dpad_up){
                 slider.SliderMovement(-1400, 0.5);
+                telemetry.addData("DE DDE,]", 1);
             }
             if (gamepad2.dpad_down)
                 slider.SliderMovement(1400, 0.5);
-
 
             if (slider.SliderBUSY())
             {
@@ -61,8 +64,8 @@ public class ArmPrototype extends LinearOpMode {
                 SliderStatus = Status.INITIALIZING;
             if (SliderStatus == Status.INITIALIZING)
             {
-                SliderStatus = Status.STATIC;
                 slider.switchToSliderRESET();
+                SliderStatus = Status.STATIC;
             }
 
             telemetry.addData("Pozitia Slider", slider.slider.getCurrentPosition());
@@ -75,6 +78,16 @@ public class ArmPrototype extends LinearOpMode {
                     arm.switchToArmDown();
                 }else arm.switchToArmSTOP();
             }
+
+            if (gamepad2.dpad_right && ArmStatus == Status.STATIC)
+                arm.ArmMovement(1000, 0.5);
+            if (gamepad2.dpad_left && ArmStatus == Status.STATIC)
+                arm.ArmMovement(-1000, 0.5);
+
+            if (gamepad2.y)
+            {
+                servo.Closed();
+            }
             if (arm.ArmBUSY())
             {
                 ArmStatus = Status.MOVING;
@@ -83,14 +96,17 @@ public class ArmPrototype extends LinearOpMode {
                 ArmStatus = Status.INITIALIZING;
             if (ArmStatus == Status.INITIALIZING)
             {
-                ArmStatus = Status.STATIC;
                 arm.switchToArmRESET();
+                ArmStatus = Status.STATIC;
             }
 
             telemetry.addData("Pozitia Arm", arm.arm.getCurrentPosition());
             telemetry.addData("Status Arm", ArmStatus);
 
-            if (gamepad2.a){
+
+            telemetry.addData("Pas", pas);
+
+            if (gamepad2.a || IntakeStatus == Status.MOVING){
                 intake.switchToIN();
             }
             else{
@@ -103,11 +119,63 @@ public class ArmPrototype extends LinearOpMode {
                 }
             }
 
+            if (gamepad2.x)
+                intake.ResetPosition();
+
+            if (intake.IntakeBUSY())
+                IntakeStatus = Status.MOVING;
+            else{
+                if (IntakeStatus == Status.MOVING)
+                    IntakeStatus = Status.INITIALIZING;
+            }
+            if (IntakeStatus == Status.INITIALIZING)
+            {
+                IntakeStatus = Status.STATIC;
+                intake.switchToRESET();
+            }
+
+
+            if (Math.abs(intake.intakewing.getCurrentPosition()) >= 2850)
+                intake.switchToRESET();
+
             telemetry.update();
             slider.update();
             arm.update();
             intake.update();
         }
     }
+
+    public void test(){
+        if (pas == 0){
+            pas=1;
+        }
+        if (pas == 1)
+        {
+            pas=1.5;
+            slider.SliderMovement(1350, 0.5);
+        }
+        if (pas == 1.5 && !slider.SliderBUSY()){
+            pas = 2;
+        }
+
+        if (pas == 2)
+        {
+            pas=2.5;
+            arm.ArmMovement(-1000, 0.5);
+        }
+        if (pas == 2.5 && !arm.ArmBUSY()){
+            pas = 3;
+        }
+
+        if (pas == 3){
+            pas = 3.5;
+            slider.SliderMovement(-1000, 0.5);
+        }
+        if (pas == 3.5 && !slider.SliderBUSY())
+        {
+            pas = 0;
+        }
+    }
+
 }
 

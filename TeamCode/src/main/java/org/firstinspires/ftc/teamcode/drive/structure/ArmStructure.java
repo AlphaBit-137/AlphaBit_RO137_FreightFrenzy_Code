@@ -34,7 +34,7 @@ public class ArmStructure {
     public void ArmMovement(int position, double power){
         arm.setTargetPosition(position);
         arm.setMode((DcMotor.RunMode.RUN_TO_POSITION));
-        arm.setPower(power);
+        //arm.setPower(power);
     }
 
 

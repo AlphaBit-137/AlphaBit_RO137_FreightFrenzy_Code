@@ -5,11 +5,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.structure.Intake;
+import org.firstinspires.ftc.teamcode.drive.structure.ServoStructure;
 
 @TeleOp
 public class IntakeTEst extends LinearOpMode {
 
     Intake intake = new Intake();
+    ServoStructure servo = new ServoStructure();
     int test = 0;
 
     Status IntakeStatus = Status.STATIC;
@@ -26,6 +28,7 @@ public class IntakeTEst extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         intake.init(hardwareMap);
+        servo.init(hardwareMap);
 
         waitForStart();
 
@@ -59,12 +62,17 @@ public class IntakeTEst extends LinearOpMode {
                 intake.switchToRESET();
             }
 
+            if(gamepad2.dpad_right)
+                servo.Open();
+            if (gamepad2.dpad_left)
+                servo.Closed();
+
 
             if (Math.abs(intake.intakewing.getCurrentPosition()) >= 2850)
                 intake.switchToRESET();
 
             telemetry.addData("Pozitia Intake:", intake.intakewing.getCurrentPosition());
-            telemetry.addData("Status resetare intake", IntakeStatus);
+            telemetry.addData("Status Intake", IntakeStatus);
             telemetry.update();
 
             intake.update();

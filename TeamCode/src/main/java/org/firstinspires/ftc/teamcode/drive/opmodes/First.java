@@ -8,9 +8,12 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.drive.structure.ArmAssist;
 //import org.firstinspires.ftc.teamcode.drive.structure.ArmSlider;
+import org.firstinspires.ftc.teamcode.drive.structure.ArmPrototype;
+import org.firstinspires.ftc.teamcode.drive.structure.ArmStructure;
 import org.firstinspires.ftc.teamcode.drive.structure.Carusel;
 import org.firstinspires.ftc.teamcode.drive.structure.Intake;
-
+import org.firstinspires.ftc.teamcode.drive.structure.ServoStructure;
+import org.firstinspires.ftc.teamcode.drive.structure.SliderStructure;
 
 
 @TeleOp
@@ -22,17 +25,26 @@ public class First extends LinearOpMode {
     public double Limit=0.5;
     public boolean Chose;
     public boolean Chose2;
-    ArmAssist assist = new ArmAssist();
-    //  ArmSlider works = new ArmSlider();
+
+    boolean reset = false;
+
+    ArmStructure arm = new ArmStructure();
+    SliderStructure slider = new SliderStructure();
+    ServoStructure servo = new ServoStructure();
     Intake intake = new Intake();
     Carusel duck = new Carusel();
+
+    private double pas = 0;
+    private int level = 0;
 
     private ElapsedTime runtime = new ElapsedTime();
 
     //Constante
     private static double MAX_POWER = 1.0, MIN_POWER = -1.0, NULL_POWER = 0.0;
 
-    public Status IntakeStatus = Status.STATIC;
+    Status IntakeStatus = Status.STATIC;
+    Status SliderStatus = Status.STATIC;
+    Status ArmStatus = Status.STATIC;
 
     //Status structuri autonoame
     public enum Status{
@@ -68,9 +80,11 @@ public class First extends LinearOpMode {
 
         intake.init(hardwareMap);
         duck.init(hardwareMap);
-        assist.init(hardwareMap);
-        //  works.init(hardwareMap);
+        slider.init(hardwareMap);
+        arm.init(hardwareMap);
+        servo.init(hardwareMap);
         runtime.reset();
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -113,60 +127,167 @@ public class First extends LinearOpMode {
                 duck.switchToIN();
             } else {duck.switchToSTOP();}
 
-            //Pozitii Brat
-            if (gamepad2.dpad_up) {
-                assist.switchTo3();
-            } else {
-                assist.switchToSTOP();
+            //Intake
+            if (gamepad2.a || IntakeStatus == Status.MOVING){
+                intake.switchToIN();
             }
-            if (gamepad2.dpad_right) {
-                assist.switchTo2();
-            } else {
-                assist.switchToSTOP();
-            }
-            if (gamepad2.right_bumper) {
-                assist.switchToArmUp();
-            }else            {
-                assist.switchToSTOP();
+            else{
+                if (gamepad2.b){
+                    intake.switchToOUT();
+                }
+                else{
+
+                    intake.switchToSTOP();
+                }
             }
 
-            //Intake
-            if(gamepad2.a){
-                intake.switchToIN();
-            }else if(gamepad2.b || IntakeStatus == Status.MOVING){
-                intake.switchToOUT();
-            }else{
-                intake.switchToSTOP();
-            }
-            if (Math.abs(intake.intakewing.getCurrentPosition()) >= 2850)
-                intake.switchToRESET();
-            if (gamepad2.dpad_left)
-            {
+            if (gamepad2.y && intake.intakewing.getCurrentPosition()!=0)
                 intake.ResetPosition();
-            }
 
             if (intake.IntakeBUSY())
                 IntakeStatus = Status.MOVING;
-            else
-                IntakeStatus = Status.INITIALIZING;
+            else{
+                if (IntakeStatus == Status.MOVING)
+                    IntakeStatus = Status.INITIALIZING;
+            }
             if (IntakeStatus == Status.INITIALIZING)
             {
                 IntakeStatus = Status.STATIC;
                 intake.switchToRESET();
             }
 
+            if (Math.abs(intake.intakewing.getCurrentPosition()) >= 2850)
+                intake.switchToRESET();
+
+            //ARM PROTOTYPE
+
+            //Slider
+            if (gamepad2.right_bumper || slider.SliderBUSY()){
+                slider.switchToSliderUp();
+            }else{
+                if (gamepad2.left_bumper){
+                    slider.switchToSliderDown();
+                }
+                else{
+                    slider.switchToSliderSTOP();
+                }
+            }
+/*
+            if (gamepad2.dpad_up && SliderStatus == Status.STATIC){
+                slider.SliderMovement(-1400, 0.5);
+            }
+            if (gamepad2.dpad_down && SliderStatus == Status.STATIC) {
+                slider.SliderMovement(1400, 0.5);
+            }
+*/
+            if (slider.SliderBUSY())
+            {
+                SliderStatus = Status.MOVING;
+            }
+            else if (SliderStatus == Status.MOVING)
+                SliderStatus = Status.INITIALIZING;
+            if (SliderStatus == Status.INITIALIZING)
+            {
+                slider.switchToSliderRESET();
+                SliderStatus = Status.STATIC;
+            }
+
+            //Arm
+            if(gamepad2.right_trigger!=0 && gamepad2.left_trigger==0 || arm.ArmBUSY()){
+                arm.switchToArmUp();
+            }else{
+                if(gamepad2.right_trigger==0 && gamepad2.left_trigger!=0){
+                    arm.switchToArmDown();
+                }else arm.switchToArmSTOP();
+            }
+/*
+            if (gamepad2.dpad_right && ArmStatus == Status.STATIC)
+                arm.ArmMovement(1000, 0.5);
+            if (gamepad2.dpad_left && ArmStatus == Status.STATIC)
+                arm.ArmMovement(-1000, 0.5);
+*/
+
+            if (arm.ArmBUSY())
+            {
+                ArmStatus = Status.MOVING;
+            }
+            else if (ArmStatus == Status.MOVING)
+                ArmStatus = Status.INITIALIZING;
+            if (ArmStatus == Status.INITIALIZING)
+            {
+                arm.switchToArmRESET();
+                ArmStatus = Status.STATIC;
+            }
+
+            //Arm assist
+
+            //Level 3
+            if((gamepad2.dpad_up || pas!=0) && (level == -3 || level == 0))
+            {
+                if (level == 0){
+                    servo.Closed();
+                    intake.ResetPosition();
+                    level = -3;
+                }
+                MovingUp();
+            }
+
+            if((gamepad2.dpad_right || pas!=0) && (level == -2 || level == 0))
+            {
+                if (level == 0) {
+                    servo.Closed();
+                    intake.ResetPosition();
+                    level = -2;
+                }
+                MovingUp();
+            }
+
+            if (gamepad2.dpad_left || pas!=0 || reset == true){
+                switch (level){
+                    case 3:{
+                        if (reset == false)
+                            MovingPoz3();
+                        else
+                            MovingResetPoz3();
+                        break;
+                    }
+                    case 2:{
+                        if (reset == false)
+                            MovingPoz2();
+                        else
+                            MovingResetPoz2();
+                        break;
+                    }
+                    default:{
+                        break;
+                    }
+                }
+            }
+
+            if (gamepad2.right_stick_button)
+            {
+                arm.switchToArmRESET();
+                slider.switchToSliderRESET();
+            }
+
             MS(Drive1, Drive2, Drive3, Drive4);
 
             telemetry.addData("Motors", "BackLeft (%.2f), FrontRight (%.2f), FrontLeft (%.2f), BackRight (%.2f)", Drive1, Drive2, Drive3, Drive4);
             telemetry.addData("Power Limit:", Limit + "%");
-            telemetry.addData("Poz Carusel",duck.Duck.getCurrentPosition());
-            telemetry.addData("Test Intake", IntakeStatus);
+            telemetry.addData("Pozitia Slider", slider.slider.getCurrentPosition());
+            telemetry.addData("Status Slider", SliderStatus);
+            telemetry.addData("Pozitia Arm", arm.arm.getCurrentPosition());
+            telemetry.addData("Status Arm", ArmStatus);
+            telemetry.addData("Pas", pas);
+            telemetry.addData("Pozitia Intake:", intake.intakewing.getCurrentPosition());
+            telemetry.addData("Status Intake", IntakeStatus);
+            telemetry.addData("Reset", reset);
+            telemetry.update();
 
             intake.update();
-            telemetry.update();
-            assist.update();
+            slider.update();
+            arm.update();
             duck.update();
-
         }
     }
 
@@ -176,6 +297,170 @@ public class First extends LinearOpMode {
         FrontLeftMotor.setPower(x3);
         BackRightMotor.setPower(x4);
 
+    }
+
+    public void MovingUp()
+    {
+        if (pas == 0){
+            pas=1;
+        }
+        if (pas == 1)
+        {
+            pas=1.5;
+            slider.SliderMovement(1350, 0.5);
+        }
+        if (pas == 1.5 && !slider.SliderBUSY()){
+            pas = 2;
+        }
+
+        if (pas == 2)
+        {
+            pas=2.5;
+            arm.ArmMovement(-1000, 0.5);
+        }
+        if (pas == 2.5 && !arm.ArmBUSY()){
+            pas = 0;
+            if (level == -2)
+                level = 2;
+            if (level == -3)
+                level = 3;
+        }
+
+    }
+
+    public void MovingPoz3()
+    {
+        if (pas==0){
+            pas=1;
+        }
+
+        if(pas == 1)
+        {
+            pas = 1.5;
+            arm.ArmMovement(-160, 0.5);
+        }
+        if (pas == 1.5 && !arm.ArmBUSY()){
+            pas = 2;
+        }
+
+        if (pas == 2)
+        {
+            servo.Open();
+            pas = 2.5;
+            sleep(1000);
+        }
+
+        if (pas == 2.5)
+        {
+            reset = true;
+            pas = 0;
+        }
+
+
+    }
+
+    public void MovingResetPoz3(){
+        if (pas == 0){
+            pas = 1.5;
+            arm.ArmMovement(1170, 0.5);
+        }
+        if (pas == 1.5 && !arm.ArmBUSY()){
+            pas = 2;
+        }
+
+        if (pas == 2)
+        {
+            pas = 2.5;
+            slider.SliderMovement(-1315, 0.5);
+        }
+        if (pas == 2.5 && !slider.SliderBUSY()){
+
+            level = 0;
+            reset = false;
+            pas = 0;
+            slider.switchToSliderRESET();
+            arm.switchToArmRESET();
+        }
+    }
+
+    public void MovingPoz2()
+    {
+//-200, -1315
+        if (pas==0){
+            pas=1;
+        }
+
+        if(pas == 1)
+        {
+            pas = 1.5;
+            arm.ArmMovement(-210, 0.5);
+        }
+        if (pas == 1.5 && !arm.ArmBUSY()){
+            pas = 2;
+        }
+
+        if (pas == 2){
+            pas = 2.5;
+            slider.SliderMovement(-1000, 0.5);
+        }
+
+        if (pas == 2.5 && !slider.SliderBUSY()){
+            pas = 3;
+        }
+
+        if (pas == 3)
+        {
+            servo.Open();
+            pas = 3.5;
+            sleep(2000);
+        }
+
+        if (pas == 3.5)
+        {
+            reset = true;
+            pas = 0;
+        }
+    }
+
+    public void MovingResetPoz2(){
+        if (pas == 0 && !slider.SliderBUSY())
+        {
+            pas = 1;
+        }
+
+        if (pas == 1)
+        {
+            slider.SliderMovement(1120, 0.5);
+            pas = 1.5;
+        }
+        if (pas == 1.5 && !slider.SliderBUSY())
+        {
+            pas = 2;
+        }
+
+        if (pas == 2)
+        {
+            arm.ArmMovement(1240, 0.5);
+            pas = 2.5;
+        }
+        if (pas == 2.5 && !arm.ArmBUSY()){
+            pas =3;
+        }
+
+        if (pas == 3)
+        {
+            slider.SliderMovement(-1200, 0.5);
+            pas=3.5;
+        }
+        if (pas == 3.5 && !slider.SliderBUSY()){
+
+            level = 0;
+            reset = false;
+            pas = 0;
+            slider.switchToSliderRESET();
+            arm.switchToArmRESET();
+        }
+//1460, 1225
     }
 
 }
