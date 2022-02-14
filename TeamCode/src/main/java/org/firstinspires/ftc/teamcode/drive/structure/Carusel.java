@@ -36,11 +36,11 @@ public class Carusel extends LinearOpMode {
     public void update(){
         switch (RobotDuck){
             case IN:{
-                Duck.setPower(0.05);
+                Duck.setPower(0.5);
                 break;
             }
             case OUT:{
-                Duck.setPower(-0.05);
+                Duck.setPower(-0.5);
                 break;
             }
             case STOP:{

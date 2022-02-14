@@ -9,7 +9,7 @@ public class TestDetection extends LinearOpMode {
 
     BlockDetection bloc = new BlockDetection();
 
-    public int caz;
+    public int caz=1;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -17,21 +17,23 @@ public class TestDetection extends LinearOpMode {
         bloc.init(hardwareMap);
 
         while (!isStarted()) {
-            if (bloc.Left_percent > 70) {
+            if (bloc.Right_percent < 100) {
                 telemetry.addData("Cazul", 3);
                 caz = 3;
             }
-            if  (bloc.Right_percent > 70) {
+            if  (bloc.Left_percent < 100) {
                 telemetry.addData("Cazul", 2);
                 caz = 2;
             }
-            else{
+            if (bloc.Left_percent > 80 && bloc.Right_percent > 80){
                telemetry.addData("Cazul",1);
                 caz = 1;
             }
-            while(isStarted()){
-                telemetry.addData("cazul",caz);
-            }
+        }
+
+        waitForStart();
+        while(opModeIsActive()){
+            telemetry.addData("cazul",caz);
 
             telemetry.addData("LeftPercent", bloc.Left_percent);
             telemetry.addData("RightPercent", bloc.Right_percent);
