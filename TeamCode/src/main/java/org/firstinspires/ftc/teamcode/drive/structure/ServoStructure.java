@@ -17,7 +17,7 @@ public class ServoStructure {
         servo.setPosition(0);
     }
 
-    public void Closed(){servo.setPosition(0.3);}
+    public void Closed(){servo.setPosition(0.33);}
 
     public void Open(){servo.setPosition(0);}
 }

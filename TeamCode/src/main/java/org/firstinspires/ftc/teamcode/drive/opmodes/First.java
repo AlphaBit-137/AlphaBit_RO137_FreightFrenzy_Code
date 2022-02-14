@@ -22,11 +22,14 @@ public class First extends LinearOpMode {
     public DcMotor FrontRightMotor = null;
     public DcMotor FrontLeftMotor = null;
     public DcMotor BackRightMotor = null;
-    public double Limit=0.5;
+    public double Limit=0.3;
     public boolean Chose;
     public boolean Chose2;
 
     boolean reset = false;
+
+    int poz=2;
+    boolean turns=true;
 
     ArmStructure arm = new ArmStructure();
     SliderStructure slider = new SliderStructure();
@@ -105,7 +108,7 @@ public class First extends LinearOpMode {
 
             if(gamepad1.left_bumper) {
                 if(Chose2)Limit=Limit-0.1;
-                if(Limit<0.3)Limit=0.3;
+                if(Limit<0.1)Limit=0.1;
                 Chose2 = false;
             } else {Chose2=true; }
 
@@ -127,6 +130,19 @@ public class First extends LinearOpMode {
                 duck.switchToIN();
             } else {duck.switchToSTOP();}
 
+            //Servo
+            if(gamepad2.y){
+                if(poz==1 && turns==true){
+                    servo.Open();
+                    poz=2;
+                }else if(poz==2 && turns==true){
+                    servo.Closed();
+                    poz=1;
+                }
+                turns=false;
+            }else turns=true;
+
+
             //Intake
             if (gamepad2.a || IntakeStatus == Status.MOVING){
                 intake.switchToIN();
@@ -140,10 +156,10 @@ public class First extends LinearOpMode {
                     intake.switchToSTOP();
                 }
             }
-
+/*
             if (gamepad2.y && intake.intakewing.getCurrentPosition()!=0)
                 intake.ResetPosition();
-
+*/
             if (intake.IntakeBUSY())
                 IntakeStatus = Status.MOVING;
             else{
@@ -226,7 +242,6 @@ public class First extends LinearOpMode {
             {
                 if (level == 0){
                     servo.Closed();
-                    intake.ResetPosition();
                     level = -3;
                 }
                 MovingUp();
@@ -236,7 +251,7 @@ public class First extends LinearOpMode {
             {
                 if (level == 0) {
                     servo.Closed();
-                    intake.ResetPosition();
+
                     level = -2;
                 }
                 MovingUp();

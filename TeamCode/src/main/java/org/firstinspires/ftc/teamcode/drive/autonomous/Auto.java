@@ -70,11 +70,11 @@ public class Auto extends LinearOpMode {
                 sleep(10);
                 mvmt.encoderDriveRotate(0.5,47,2,-1);
                 sleep(10);
-                mvmt.encoderDriveStrafe(0.3,45,3,-1);
+                mvmt.encoderDriveStrafe(0.3,49,3,-1);
                 sleep(10);
             }else if(caz == 2){
                 mvmt.encoderDriveLinear(0.5,28,2,-1);
-                slide.switchTo1();
+                slide.switchTo2();
                 slide.update();
                 sleep(10);
                 mvmt.encoderDriveRotate(0.5,47,2,-1);
@@ -83,7 +83,7 @@ public class Auto extends LinearOpMode {
                 sleep(10);
             }else{
                 mvmt.encoderDriveLinear(0.5,35,2,-1);
-                slide.switchTo1();
+                slide.switchTo3();
                 slide.update();
                 sleep(10);
                 mvmt.encoderDriveLinear(0.2, 5, 3, 1);
