@@ -54,11 +54,6 @@ public class ArmAssist extends LinearOpMode {
         Level2,
         Level3,
         ArmUp,
-        ArmDown,
-        ArmS,
-        SliderUp,
-        SliderDown,
-        SliderStop,
         STOP,
     }
 
@@ -70,36 +65,38 @@ public class ArmAssist extends LinearOpMode {
         switch (RobotPos) {
             case Level1: {
                 Closed();
-                SliderMovement(1600, -0.5, 1, 2.0);
-                ArmMovement(-500, 0.35, 2.0);
-                ArmMovement(-1050, 0.23, 2.0);
+                SliderMovement(1605, -0.5, 1, 2.0);
+                ArmMovement(-500, 0.45, 2.0);
+                ArmMovement(-1210, 0.33, 2.0);
                 Opened();
-                sleep(100);
+                sleep(1200);
                 ArmMovement(0, 0.3, 2.0);
                 SliderMovement(10, 0.5, -1, 2.0);
-                Closed();
                 break;
             }
             case Level2: {
                 Closed();
                 SliderMovement(1600, 0.5, 1, 2.0);
-                ArmMovement(-500, 0.6, 2.0);
-                ArmMovement(-1100, 0.23, 2.0);
+                ArmMovement(-500, 0.4, 2.0);
+                ArmMovement(-1300, 0.33, 2.0);
                 Opened();
-                ArmMovement(0, 0.4, 2.0);
+                sleep(1200);
+                ArmMovement(0, 0.3, 2.0);
                 SliderMovement(10, 0.5, -1, 2.0);
-                Closed();
                 break;
             }
             case Level3:{
                 Closed();
                 SliderMovement(1600, 0.5, 1, 2.0);
                 ArmMovement(-500, 0.35, 2.0);
+                SliderMovement(800, 0.5, -1, 2.0);
                 ArmMovement(-1200, 0.23, 2.0);
                 Opened();
+                sleep(1200);
+                SliderMovement(1600, 0.5, 1, 2.0);
+
                 ArmMovement(0, 0.3, 2.0);
                 SliderMovement(10, 0.5, -1, 2.0);
-                Closed();
                 break;
             }
             case STOP: {
